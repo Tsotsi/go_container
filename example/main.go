@@ -2,7 +2,7 @@ package main
 
 import (
 	"reflect"
-	"go-container"
+	"go_container"
 	"fmt"
 )
 

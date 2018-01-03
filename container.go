@@ -82,9 +82,6 @@ func (c Container) Get(key interface{}) (value interface{}, ok bool) {
 		case ITEM_TYPE_FACTORY:
 			vv := reflect.ValueOf(v.Raw)
 			args := []reflect.Value{reflect.ValueOf(&c)}
-			//if v.rawInfo[0] > 0 {
-			//	args = append(args, reflect.ValueOf(&c))
-			//}
 			resv := vv.Call(args)
 			v.Value = resv[0].Interface()
 			value = v.Value
