@@ -9,8 +9,8 @@ type Abc struct {
 	Cc int
 }
 
-func NewAbc()  *Abc{
-	c:=new(Abc)
+func NewAbc() *Abc {
+	c := new(Abc)
 	c.Cc = 110
 	return c
 }
@@ -23,24 +23,19 @@ func TestContainer(t *testing.T) {
 		return NewAbc()
 	})
 	if f, ok := c.Get("abc"); ok {
-		if f.(*Abc).Cc == 110 {
-			t.Log(f.(*Abc).Cc)
-		} else {
+		if f.(*Abc).Cc != 110 {
 			t.Error(f.(*Abc).Cc)
 		}
 		f.(*Abc).Cc += 9
 	}
 
 	if f, ok := c.Get("abc"); ok {
-		if f.(*Abc).Cc == 119 {
-			t.Log(f.(*Abc).Cc)
-		} else {
+		if f.(*Abc).Cc != 119 {
 			t.Error(f.(*Abc).Cc)
 		}
 	}
 
 }
-
 
 func TestContainer_Factory(t *testing.T) {
 	c := NewContainer()
@@ -48,18 +43,14 @@ func TestContainer_Factory(t *testing.T) {
 		return NewAbc()
 	})
 	if f, ok := c.Get("abc"); ok {
-		if f.(*Abc).Cc == 110 {
-			t.Log(f.(*Abc).Cc)
-		} else {
+		if f.(*Abc).Cc != 110 {
 			t.Error(f.(*Abc).Cc)
 		}
 		f.(*Abc).Cc += 9
 	}
 
 	if f, ok := c.Get("abc"); ok {
-		if f.(*Abc).Cc == 110 {
-			t.Log(f.(*Abc).Cc)
-		} else {
+		if f.(*Abc).Cc != 110 {
 			t.Error(f.(*Abc).Cc)
 		}
 	}
@@ -70,19 +61,18 @@ type exampleAbc struct {
 	Cc int
 }
 
-func newExampleAbc()  *exampleAbc{
-	c:=new(exampleAbc)
+func newExampleAbc() *exampleAbc {
+	c := new(exampleAbc)
 	c.Cc = 110
 	return c
 }
 
-func ExampleContainer_Set()  {
+func ExampleContainer_Set() {
 	c := NewContainer()
 	c.Set("abc", func(cc *Container) interface{} {
 		return newExampleAbc()
 	})
 	if f, ok := c.Get("abc"); ok {
-		fmt.Println(f.(*exampleAbc).Cc)
 		f.(*exampleAbc).Cc += 9
 	}
 
@@ -99,7 +89,6 @@ func ExampleContainer_Factory() {
 		return newExampleAbc()
 	})
 	if f, ok := c.Get("abc"); ok {
-		fmt.Println(f.(*exampleAbc).Cc)
 		f.(*exampleAbc).Cc += 9
 	}
 
@@ -107,5 +96,33 @@ func ExampleContainer_Factory() {
 		fmt.Println(f.(*exampleAbc).Cc)
 		//Output:
 		//110
+	}
+}
+
+func BenchmarkContainer_Set(b *testing.B) {
+	c := NewContainer()
+	for i := 0; i < b.N; i++ {
+		c.Set("abc", func(cc *Container) interface{} {
+			return newExampleAbc()
+		})
+	}
+}
+
+func BenchmarkContainer_Factory(b *testing.B) {
+	c := NewContainer()
+	for i := 0; i < b.N; i++ {
+		c.Factory("abc", func(cc *Container) interface{} {
+			return newExampleAbc()
+		})
+	}
+}
+
+func BenchmarkContainer_Get(b *testing.B) {
+	c := NewContainer()
+	c.Set("abc", func(cc *Container) interface{} {
+		return newExampleAbc()
+	})
+	for i := 0; i < b.N; i++ {
+		c.Get("abc")
 	}
 }

@@ -12,7 +12,7 @@ import (
 type ItemType int
 
 const (
-	ITEM_TYPE_SHARED  ItemType = 1 << iota
+	ITEM_TYPE_SHARED ItemType = 1 << iota
 	ITEM_TYPE_FACTORY
 	ITEM_TYPE_VALUE
 )
@@ -70,7 +70,7 @@ func (c Container) Get(key interface{}) (value interface{}, ok bool) {
 		case ITEM_TYPE_SHARED:
 			v.one.Do(func() {
 				vv := reflect.ValueOf(v.Raw)
-				args := []reflect.Value{}
+				var args []reflect.Value
 				if v.rawInfo[0] > 0 {
 					args = append(args, reflect.ValueOf(&c))
 				}
