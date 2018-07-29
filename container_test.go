@@ -57,6 +57,24 @@ func TestContainer_Factory(t *testing.T) {
 
 }
 
+func TestContainer_Raw(t *testing.T) {
+	c := NewContainer()
+	d:=NewAbc()
+	c.Set("abc", d)
+	if f, ok := c.Raw("abc"); ok {
+		if f.(*Abc).Cc != 110 {
+			t.Error(f.(*Abc).Cc)
+		}
+		f.(*Abc).Cc += 9
+	}
+
+	if f, ok := c.Get("abc"); ok {
+		if f.(*Abc).Cc != 119 {
+			t.Error(f.(*Abc).Cc)
+		}
+	}
+}
+
 type exampleAbc struct {
 	Cc int
 }
@@ -124,5 +142,15 @@ func BenchmarkContainer_Get(b *testing.B) {
 	})
 	for i := 0; i < b.N; i++ {
 		c.Get("abc")
+	}
+}
+
+func BenchmarkContainer_Raw(b *testing.B) {
+	c := NewContainer()
+	c.Set("abc", func(cc *Container) interface{} {
+		return newExampleAbc()
+	})
+	for i := 0; i < b.N; i++ {
+		c.Raw("abc")
 	}
 }
